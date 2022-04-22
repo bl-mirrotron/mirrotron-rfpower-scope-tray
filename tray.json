@@ -1,48 +1,8 @@
 {
-  "type": "blinky-bus",
+  "type": "llrf-scope",
   "name": "01",
   "arcPeriod": 60000,
   "timeStamp": 1646408271939,
-  "linkQuality": {
-    "action": "reading",
-    "type": "scalar",
-    "value": 70,
-    "unit": "/70",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -1,
-        "low": -1,
-        "high": 100,
-        "hihi": 100
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    }
-  },
-  "signalLevel": {
-    "action": "reading",
-    "type": "scalar",
-    "value": -30,
-    "unit": "dBm",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -100,
-        "low": -100,
-        "high": 30,
-        "hihi": 30
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    }
-  },
   "led1": {
     "action": "setting",
     "type": "scalar",

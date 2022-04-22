@@ -181,25 +181,6 @@
         "sessionExpiry": ""
     },
     {
-        "id": "a4f4c59daf894823",
-        "type": "serial-port",
-        "serialport": "$(SERIALPORT)",
-        "serialbaud": "19200",
-        "databits": "8",
-        "parity": "none",
-        "stopbits": "1",
-        "waitfor": "",
-        "dtr": "none",
-        "rts": "none",
-        "cts": "none",
-        "dsr": "none",
-        "newline": "$(SERIALBUFSIZE)",
-        "bin": "bin",
-        "out": "count",
-        "addchar": "",
-        "responsetimeout": "2000"
-    },
-    {
         "id": "30f384ea.cf21fc",
         "type": "function",
         "z": "85e21fcb925ef32f",
@@ -1078,9 +1059,7 @@
         "x": 170,
         "y": 960,
         "wires": [
-            [
-                "3026811a11de85fd"
-            ]
+            []
         ]
     },
     {
@@ -1097,9 +1076,7 @@
         "x": 170,
         "y": 1040,
         "wires": [
-            [
-                "3026811a11de85fd"
-            ]
+            []
         ]
     },
     {
@@ -1752,30 +1729,6 @@
         "x": 1280,
         "y": 680,
         "wires": []
-    },
-    {
-        "id": "3026811a11de85fd",
-        "type": "serial out",
-        "z": "85e21fcb925ef32f",
-        "name": "BlinkyBus Out",
-        "serial": "a4f4c59daf894823",
-        "x": 350,
-        "y": 1000,
-        "wires": []
-    },
-    {
-        "id": "930cf5038252d1fd",
-        "type": "serial in",
-        "z": "85e21fcb925ef32f",
-        "name": "BlinkyBus In",
-        "serial": "a4f4c59daf894823",
-        "x": 530,
-        "y": 1000,
-        "wires": [
-            [
-                "1fc86ac13df1a13f"
-            ]
-        ]
     },
     {
         "id": "9f8c3b4630e734a3",

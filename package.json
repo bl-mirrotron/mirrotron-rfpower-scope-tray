@@ -1,5 +1,5 @@
 {
-  "name": "blinky-bus-tray",
+  "name": "mirrotron-llrf-scope-tray",
   "version": "1.0.0",
   "description": "",
   "main": "node_modules/node-red/red.js -s ./settings.js -u ./",
@@ -20,8 +20,7 @@
   },
   "homepage": "",
   "dependencies": {
-    "node-red": "^2.1.4",
-    "node-red-dashboard": "^3.1.3",
-    "node-red-node-serialport": "~0.15.0"
+    "node-red": "^2.2.2",
+    "node-red-dashboard": "^3.1.6"
   }
 }
