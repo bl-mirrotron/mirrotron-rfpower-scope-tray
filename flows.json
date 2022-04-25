@@ -2,49 +2,9 @@
     {
         "id": "85e21fcb925ef32f",
         "type": "tab",
-        "label": "blinky-bus-tray",
+        "label": "mirrotron-llrf-scope-tray",
         "disabled": false,
         "info": ""
-    },
-    {
-        "id": "40e56362c23599cc",
-        "type": "group",
-        "z": "85e21fcb925ef32f",
-        "name": "Edit Me",
-        "style": {
-            "fill": "#9363b7",
-            "label": true,
-            "label-position": "n",
-            "color": "#ffff00",
-            "stroke": "#001f60"
-        },
-        "nodes": [
-            "5e7d2de841bcb0c1"
-        ],
-        "x": 994,
-        "y": 19,
-        "w": 172,
-        "h": 82
-    },
-    {
-        "id": "cc88dacde90c32cd",
-        "type": "group",
-        "z": "85e21fcb925ef32f",
-        "name": "Edit Me",
-        "style": {
-            "stroke": "#000000",
-            "fill": "#9363b7",
-            "label": true,
-            "label-position": "n",
-            "color": "#ffff00"
-        },
-        "nodes": [
-            "352395cfbb5c4259"
-        ],
-        "x": 534,
-        "y": 599,
-        "w": 232,
-        "h": 82
     },
     {
         "id": "24d6701c4857e25e",
@@ -106,7 +66,7 @@
                     "edited": false
                 },
                 "page-sidebar-backgroundColor": {
-                    "value": "#000000",
+                    "value": "#333333",
                     "edited": false
                 },
                 "group-textColor": {
@@ -136,10 +96,17 @@
                 "base-font": {
                     "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
                 }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
             }
         },
         "site": {
-            "name": "Blinky-Lite-Tutorial",
+            "name": "Mirrotron-LLRF-Scope",
             "hideToolbar": "false",
             "allowSwipe": "false",
             "dateFormat": "DD/MM/YYYY",
@@ -181,11 +148,30 @@
         "sessionExpiry": ""
     },
     {
+        "id": "67d6e9be.8270f8",
+        "type": "ui_group",
+        "name": "Scope Trace",
+        "tab": "7c22f36f.fb7a4c",
+        "order": 2,
+        "disp": true,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "7c22f36f.fb7a4c",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
         "id": "30f384ea.cf21fc",
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Save tray config in Memory",
-        "func": "global.set('settingInProgress', true);\nglobal.set('tray', msg.payload);\nglobal.set('deviceInit', 1);\nreturn msg;",
+        "func": "msg.payload.watchdog.value = 0;\nglobal.set('tray', msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -195,7 +181,7 @@
         "y": 60,
         "wires": [
             [
-                "5e7d2de841bcb0c1"
+                "ebb5481bd4277b24"
             ]
         ]
     },
@@ -365,8 +351,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "Restart",
-        "x": 700,
-        "y": 1240,
+        "x": 720,
+        "y": 1480,
         "wires": [
             [],
             [],
@@ -395,8 +381,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 310,
-        "y": 1260,
+        "x": 330,
+        "y": 1500,
         "wires": [
             [
                 "985cd59b3e414efe"
@@ -417,8 +403,8 @@
         "timer": "",
         "oldrc": false,
         "name": "Reboot",
-        "x": 500,
-        "y": 1300,
+        "x": 520,
+        "y": 1540,
         "wires": [
             [],
             [],
@@ -442,8 +428,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 160,
-        "y": 1260,
+        "x": 180,
+        "y": 1500,
         "wires": [
             [
                 "9e290594.69c548"
@@ -473,14 +459,14 @@
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Readings Alarm Scan",
-        "func": "var newData = msg.payload;\nvar tray = global.get('tray');\ntray.linkQuality.value     = global.get('linkQuality');\ntray.signalLevel.value     = global.get('signalLevel');\nvar alarmFlagReading = scalarAlarmScan(tray, 'reading');\nvar alarmFlagSetting = scalarAlarmScan(tray, 'setting');\nvar newMsg   = null;\nvar alarmMsg = null;\nvar newSettingMsg = null;\nif (alarmFlagReading || alarmFlagSetting)\n{\n    alarmMsg = \n    {\n        topic: 'alarm',\n        payload: true\n    }\n}\nif (msg.topic == 'newSetting')\n{\n    newSettingMsg = \n    {\n        topic: 'newSetting',\n        payload: true\n    }\n};\nif (newData)\n{\n    newMsg = \n    {\n        topic: 'newData',\n        payload: true\n    }\n}\nif (alarmMsg != null ) newMsg = null;\nreturn [newMsg, newSettingMsg, alarmMsg];\n\nfunction getActionArray(tray, type, actionType)\n{\n    var actionArray = [];\n    var keys = Object.keys(tray);\n    for (var ii = 0; ii < keys.length; ++ii)\n    {\n        if (tray[keys[ii]].hasOwnProperty('type'))\n        {\n            if (tray[keys[ii]].type == type)\n            {\n                if (tray[keys[ii]].action == actionType)\n                {\n                    actionArray.push(tray[keys[ii]]);\n                }\n            }\n        }\n    }\n    return actionArray;\n}\nfunction scalarAlarmScan(tray, actionType)\n{\n    var alarmFlag = false;\n    var actionArray = getActionArray(tray, 'scalar', actionType);\n    if (actionArray.length > 0)\n    {\n        for (var ii = 0; ii < actionArray.length; ++ii)\n        {\n            let oldAlarmValue = actionArray[ii].alarm.value;\n            actionArray[ii].alarm.value = 0;\n            if (!isNaN(actionArray[ii].value))\n            {\n                if (actionArray[ii].value <= actionArray[ii].alarm.limits.low)  actionArray[ii].alarm.value = 1;\n                if (actionArray[ii].value <= actionArray[ii].alarm.limits.lolo) actionArray[ii].alarm.value = 3;\n                if (actionArray[ii].value >= actionArray[ii].alarm.limits.high) actionArray[ii].alarm.value = 2;\n                if (actionArray[ii].value >= actionArray[ii].alarm.limits.hihi) actionArray[ii].alarm.value = 4;\n                if (actionArray[ii].alarm.value != oldAlarmValue) alarmFlag = true;\n            }\n        }\n    }\n    return alarmFlag;\n}\n",
+        "func": "var newData = msg.payload;\nvar tray = global.get('tray');\nvar alarmFlagReading = scalarAlarmScan(tray, 'reading');\nvar alarmFlagSetting = scalarAlarmScan(tray, 'setting');\nvar newMsg   = null;\nvar alarmMsg = null;\nvar newSettingMsg = null;\nif (alarmFlagReading || alarmFlagSetting)\n{\n    alarmMsg = \n    {\n        topic: 'alarm',\n        payload: true\n    }\n}\nif (msg.topic == 'newSetting')\n{\n    newSettingMsg = \n    {\n        topic: 'newSetting',\n        payload: true\n    }\n};\nif (newData)\n{\n    newMsg = \n    {\n        topic: 'newData',\n        payload: true\n    }\n}\nif (alarmMsg != null ) newMsg = null;\nreturn [newMsg, newSettingMsg, alarmMsg];\n\nfunction getActionArray(tray, type, actionType)\n{\n    var actionArray = [];\n    var keys = Object.keys(tray);\n    for (var ii = 0; ii < keys.length; ++ii)\n    {\n        if (tray[keys[ii]].hasOwnProperty('type'))\n        {\n            if (tray[keys[ii]].type == type)\n            {\n                if (tray[keys[ii]].action == actionType)\n                {\n                    actionArray.push(tray[keys[ii]]);\n                }\n            }\n        }\n    }\n    return actionArray;\n}\nfunction scalarAlarmScan(tray, actionType)\n{\n    var alarmFlag = false;\n    var actionArray = getActionArray(tray, 'scalar', actionType);\n    if (actionArray.length > 0)\n    {\n        for (var ii = 0; ii < actionArray.length; ++ii)\n        {\n            let oldAlarmValue = actionArray[ii].alarm.value;\n            actionArray[ii].alarm.value = 0;\n            if (!isNaN(actionArray[ii].value))\n            {\n                if (actionArray[ii].value <= actionArray[ii].alarm.limits.low)  actionArray[ii].alarm.value = 1;\n                if (actionArray[ii].value <= actionArray[ii].alarm.limits.lolo) actionArray[ii].alarm.value = 3;\n                if (actionArray[ii].value >= actionArray[ii].alarm.limits.high) actionArray[ii].alarm.value = 2;\n                if (actionArray[ii].value >= actionArray[ii].alarm.limits.hihi) actionArray[ii].alarm.value = 4;\n                if (actionArray[ii].alarm.value != oldAlarmValue) alarmFlag = true;\n            }\n        }\n    }\n    return alarmFlag;\n}\n",
         "outputs": 3,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.set('lastAlarm', -1);",
         "finalize": "",
         "libs": [],
-        "x": 900,
-        "y": 640,
+        "x": 1020,
+        "y": 980,
         "wires": [
             [
                 "f5d0568e288098ed"
@@ -490,34 +476,6 @@
             ],
             [
                 "e490045da57dbc44"
-            ]
-        ]
-    },
-    {
-        "id": "a1698f8bfcc63203",
-        "type": "inject",
-        "z": "85e21fcb925ef32f",
-        "name": "read Status",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "2",
-        "crontab": "",
-        "once": true,
-        "onceDelay": "8",
-        "topic": "readTable",
-        "payloadType": "date",
-        "x": 130,
-        "y": 640,
-        "wires": [
-            [
-                "b5aa124df51a8d82"
             ]
         ]
     },
@@ -618,25 +576,6 @@
         ]
     },
     {
-        "id": "b5aa124df51a8d82",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Read BlinkyBus",
-        "func": "if (global.get('settingInProgress')) return null;\nif (global.get('deviceInit') != 0) return null;\nreturn {topic: \"readStatus\", payload:true, timeStamp:msg.payload};\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 300,
-        "y": 640,
-        "wires": [
-            [
-                "b7fd8744c033e8b3"
-            ]
-        ]
-    },
-    {
         "id": "f75b9887786b11c4",
         "type": "function",
         "z": "85e21fcb925ef32f",
@@ -690,8 +629,8 @@
             "45a97566b65c65cc",
             "05c0c7b4f59ca88d"
         ],
-        "x": 1055,
-        "y": 600,
+        "x": 1175,
+        "y": 940,
         "wires": []
     },
     {
@@ -719,50 +658,6 @@
         "x": 355,
         "y": 380,
         "wires": []
-    },
-    {
-        "id": "930b94f38479787c",
-        "type": "split",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 1430,
-        "y": 60,
-        "wires": [
-            [
-                "69d1e54394d2fd5e"
-            ]
-        ]
-    },
-    {
-        "id": "69d1e54394d2fd5e",
-        "type": "delay",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1580,
-        "y": 60,
-        "wires": [
-            [
-                "742713de179bd6ce"
-            ]
-        ]
     },
     {
         "id": "c81b72b9290d1c36",
@@ -886,7 +781,7 @@
         "topic": "archiveClock",
         "payloadType": "date",
         "x": 140,
-        "y": 780,
+        "y": 640,
         "wires": [
             [
                 "6a9b2f2af2f7d084"
@@ -905,7 +800,7 @@
         "finalize": "",
         "libs": [],
         "x": 350,
-        "y": 780,
+        "y": 640,
         "wires": [
             [
                 "d74e019a27b1a659"
@@ -932,8 +827,8 @@
         "links": [
             "72b5ca0e2043aba0"
         ],
-        "x": 55,
-        "y": 1260,
+        "x": 75,
+        "y": 1500,
         "wires": [
             [
                 "557e4f40.b904e"
@@ -949,57 +844,12 @@
         "links": [
             "04d132d87ffeb91a",
             "45a97566b65c65cc",
-            "05c0c7b4f59ca88d"
+            "05c0c7b4f59ca88d",
+            "996414e175b47253"
         ],
         "x": 355,
         "y": 420,
         "wires": []
-    },
-    {
-        "id": "3c51c680e18abf95",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Allow Readings",
-        "func": "if (msg.payload.address == -1)\n{\n    global.set('settingInProgress',false);\n    global.set('deviceInit', 0);\n}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 2060,
-        "y": 120,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "961b85c2472cee35",
-        "type": "link out",
-        "z": "85e21fcb925ef32f",
-        "name": "begin re-init device",
-        "mode": "link",
-        "links": [
-            "5aebb0b38ba2e191"
-        ],
-        "x": 855,
-        "y": 1020,
-        "wires": []
-    },
-    {
-        "id": "5aebb0b38ba2e191",
-        "type": "link in",
-        "z": "85e21fcb925ef32f",
-        "name": "read tray config in",
-        "links": [
-            "961b85c2472cee35"
-        ],
-        "x": 935,
-        "y": 100,
-        "wires": [
-            [
-                "5e7d2de841bcb0c1"
-            ]
-        ]
     },
     {
         "id": "6af76a294daa96eb",
@@ -1012,142 +862,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
-        "y": 1120,
-        "wires": []
-    },
-    {
-        "id": "fc32acfc21c97af1",
-        "type": "inject",
-        "z": "85e21fcb925ef32f",
-        "name": "serialBufSize",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "serialBufSize",
-        "payload": "SERIALBUFSIZE",
-        "payloadType": "env",
-        "x": 130,
-        "y": 1120,
-        "wires": [
-            [
-                "6af76a294daa96eb"
-            ]
-        ]
-    },
-    {
-        "id": "52b50d7763d10fa2",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Send Setting",
-        "func": "global.set('settingInProgress',true);\nvar bufsize = 4;\nvar buffer = new ArrayBuffer(bufsize);\nvar settingsView = new DataView(buffer);\nsettingsView.setUint8(0, 1, true); //setting\nsettingsView.setUint8(1, msg.payload.address, true); //address\nsettingsView.setInt16(2, msg.payload.value, true); //value\nreturn {topic:'setting',payload:Buffer.from(buffer),address:msg.payload.address};\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 170,
-        "y": 960,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "e023e3fbaf0e8beb",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Get Reading",
-        "func": "var bufsize = 4;\nvar buffer = new ArrayBuffer(bufsize);\nvar settingsView = new DataView(buffer);\nsettingsView.setUint8(0, 0, true); //setting\nsettingsView.setUint8(1, 0, true); //address\nsettingsView.setInt16(2, 0, true); //value\n\nreturn {topic:'reading',payload:Buffer.from(buffer),timeStamp:msg.timeStamp};\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 170,
-        "y": 1040,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "1fc86ac13df1a13f",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Check Reading",
-        "func": "var serialBufSize = global.get('serialBufSize');\nvar dataView     = new DataView(new ArrayBuffer(2));\nvar dataBuffer = [];\nfor (var ii = 0; ii < (msg.payload.length / 2); ++ii)\n{\n    for (ib = 0; ib < 2; ++ib)   dataView.setUint8(ib, msg.payload[(ii * 2) + 1 - ib]);\n    dataBuffer.push( dataView.getInt16(0));\n}\nvar topic = 'newReading';\nif (global.get('settingInProgress'))\n{\n    topic = 'newSetting';\n    if (global.get('deviceInit') < 1);\n        global.set('settingInProgress', false)\n}\nglobal.get('tray').timeStamp = new Date().getTime();\nif (dataBuffer[0] == 1)\n{\n    var initDeviceMsg = {topic:\"initDevice\",payload:true};\n    global.set('settingInProgress', true)\n    global.set('deviceInit', 2);\n    return [null, initDeviceMsg];\n}\nreturn [{topic:topic, payload:dataBuffer},null];\n\n\n\n",
-        "outputs": 2,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 700,
-        "y": 1000,
-        "wires": [
-            [
-                "ed6ec66d5cb48297"
-            ],
-            [
-                "961b85c2472cee35"
-            ]
-        ]
-    },
-    {
-        "id": "b0f91914917b2de1",
-        "type": "link in",
-        "z": "85e21fcb925ef32f",
-        "name": "BlinkyBus Setting In",
-        "links": [
-            "01598091ca19387c",
-            "aa428318895690ee",
-            "93758a55568a2f76"
-        ],
-        "x": 55,
-        "y": 960,
-        "wires": [
-            [
-                "52b50d7763d10fa2"
-            ]
-        ]
-    },
-    {
-        "id": "da43bbc0389c5027",
-        "type": "link in",
-        "z": "85e21fcb925ef32f",
-        "name": "BlinkyBus Reading In",
-        "links": [
-            "6238aa4113faa347",
-            "b7fd8744c033e8b3"
-        ],
-        "x": 55,
-        "y": 1040,
-        "wires": [
-            [
-                "e023e3fbaf0e8beb"
-            ]
-        ]
-    },
-    {
-        "id": "ed6ec66d5cb48297",
-        "type": "link out",
-        "z": "85e21fcb925ef32f",
-        "name": "BlinkyBus Reading Out",
-        "mode": "link",
-        "links": [
-            "a3d99d9c796d9231",
-            "edafb769c9979256"
-        ],
-        "x": 855,
-        "y": 980,
+        "x": 350,
+        "y": 1360,
         "wires": []
     },
     {
@@ -1157,40 +873,11 @@
         "name": "Init device setting in",
         "mode": "link",
         "links": [
-            "b0f91914917b2de1"
+            "996414e175b47253"
         ],
-        "x": 1835,
+        "x": 1155,
         "y": 60,
         "wires": []
-    },
-    {
-        "id": "b7fd8744c033e8b3",
-        "type": "link out",
-        "z": "85e21fcb925ef32f",
-        "name": "Poll BlinkBus In",
-        "mode": "link",
-        "links": [
-            "da43bbc0389c5027"
-        ],
-        "x": 415,
-        "y": 640,
-        "wires": []
-    },
-    {
-        "id": "edafb769c9979256",
-        "type": "link in",
-        "z": "85e21fcb925ef32f",
-        "name": "Poll BlinkBus Out",
-        "links": [
-            "ed6ec66d5cb48297"
-        ],
-        "x": 515,
-        "y": 640,
-        "wires": [
-            [
-                "352395cfbb5c4259"
-            ]
-        ]
     },
     {
         "id": "93758a55568a2f76",
@@ -1222,69 +909,11 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 1290,
-        "y": 60,
-        "wires": [
-            [
-                "930b94f38479787c"
-            ]
-        ]
-    },
-    {
-        "id": "742713de179bd6ce",
-        "type": "switch",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "property": "payload.address",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "gte",
-                "v": "0",
-                "vt": "num"
-            },
-            {
-                "t": "eq",
-                "v": "-1",
-                "vt": "num"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 1730,
+        "x": 1040,
         "y": 60,
         "wires": [
             [
                 "aa428318895690ee"
-            ],
-            [
-                "cc28796b6343f69f"
-            ]
-        ]
-    },
-    {
-        "id": "cc28796b6343f69f",
-        "type": "delay",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "2",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "allowrate": false,
-        "outputs": 1,
-        "x": 1880,
-        "y": 120,
-        "wires": [
-            [
-                "3c51c680e18abf95"
             ]
         ]
     },
@@ -1309,8 +938,8 @@
         "topic": "pm2Name",
         "payload": "PM2NAME",
         "payloadType": "env",
-        "x": 130,
-        "y": 1180,
+        "x": 150,
+        "y": 1360,
         "wires": [
             [
                 "6af76a294daa96eb"
@@ -1328,8 +957,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 520,
-        "y": 1240,
+        "x": 540,
+        "y": 1480,
         "wires": [
             [
                 "c0939e4a.6386f"
@@ -1357,7 +986,7 @@
         "topic": "archiveNow",
         "payloadType": "date",
         "x": 130,
-        "y": 840,
+        "y": 700,
         "wires": [
             [
                 "76d6712bed883108"
@@ -1376,7 +1005,7 @@
         "finalize": "",
         "libs": [],
         "x": 330,
-        "y": 840,
+        "y": 700,
         "wires": [
             [
                 "d74e019a27b1a659"
@@ -1404,8 +1033,8 @@
         "topic": "project",
         "payload": "PROJECT",
         "payloadType": "env",
-        "x": 100,
-        "y": 1400,
+        "x": 140,
+        "y": 1420,
         "wires": [
             [
                 "df7945d1e609440c"
@@ -1423,66 +1052,9 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 290,
-        "y": 1400,
+        "x": 330,
+        "y": 1420,
         "wires": []
-    },
-    {
-        "id": "0ad39c241b705258",
-        "type": "exec",
-        "z": "85e21fcb925ef32f",
-        "command": "iwconfig",
-        "addpay": false,
-        "append": "",
-        "useSpawn": "false",
-        "timer": "",
-        "oldrc": false,
-        "name": "",
-        "x": 720,
-        "y": 1400,
-        "wires": [
-            [
-                "b6b5acfa59ca717b"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "b2e05104b7f0df93",
-        "type": "inject",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "repeat": "5",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 560,
-        "y": 1400,
-        "wires": [
-            [
-                "0ad39c241b705258"
-            ]
-        ]
-    },
-    {
-        "id": "b6b5acfa59ca717b",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Get Signal Quality",
-        "func": "var info = msg.payload;\nvar linkStartIndex  = info.indexOf('Link Quality=');\nvar levelStartIndex = info.indexOf('Signal level=');\nvar linkQuality = Number(info.substring(linkStartIndex + 13, linkStartIndex + 15));\nvar signalLevel =  Number(info.substring(levelStartIndex + 13, levelStartIndex + 16));\nvar ssid = info.substring(info.indexOf('ESSID') + 7);\nssid = ssid.substring(0,ssid.indexOf('\"'));\nvar val = {linkQuality : linkQuality, signalLevel: signalLevel, ssid:ssid};\nglobal.set('linkQuality',linkQuality);\nglobal.set('signalLevel', signalLevel);\nglobal.set('ssid', ssid);\nreturn {topic :'test',payload : val};",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "x": 900,
-        "y": 1400,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "501090a1fd5f88f5",
@@ -1605,7 +1177,7 @@
         "expiry": "",
         "broker": "79250bf3.365cc4",
         "x": 760,
-        "y": 780,
+        "y": 640,
         "wires": []
     },
     {
@@ -1620,50 +1192,10 @@
         "finalize": "",
         "libs": [],
         "x": 570,
-        "y": 780,
-        "wires": [
-            [
-                "45409b1230e854cd"
-            ]
-        ]
-    },
-    {
-        "id": "5e7d2de841bcb0c1",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "g": "40e56362c23599cc",
-        "name": "Init Gizmo",
-        "func": "var tray = global.get('tray');\nvar deviceInit = global.get('deviceInit');\nif (deviceInit == 1) //tray rebooted\n{\n    \n}\nif (deviceInit == 2) //device rebooted\n{\n    \n}\n\nvar msgs = [];\nmsgs[0] = {\"address\":0,\"value\":0};\nmsgs[1] = {\"address\":1,\"value\":tray.led1.value};\nmsgs[2] = {\"address\":2,\"value\":tray.led2.value};\nmsgs[3] = {\"address\":3,\"value\":tray.led3.value};\n//must be the last!\nmsgs[4] = {\"address\":-1,\"value\":0};\nreturn {topic : 'initDevice', payload: msgs};\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1080,
-        "y": 60,
-        "wires": [
-            [
-                "ebb5481bd4277b24"
-            ]
-        ]
-    },
-    {
-        "id": "352395cfbb5c4259",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "g": "cc88dacde90c32cd",
-        "name": "Create Readings",
-        "func": "var tray = global.get('tray');\nvar newData = false;\nif (tray.led1.value != msg.payload[1])\n{\n    tray.led1.value        = msg.payload[1];\n    newData = true;\n}\nif (tray.led2.value != msg.payload[2])\n{\n    tray.led2.value        = msg.payload[2];\n    newData = true;\n}\nif (tray.led3.value != msg.payload[3])\n{\n    tray.led3.value        = msg.payload[3];\n    newData = true;\n}\n\nreturn  {topic:msg.topic, payload:newData}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 650,
         "y": 640,
         "wires": [
             [
-                "99fbe8135d0ce161"
+                "45409b1230e854cd"
             ]
         ]
     },
@@ -1673,7 +1205,7 @@
         "z": "85e21fcb925ef32f",
         "g": "24d6701c4857e25e",
         "name": "Create Setting",
-        "func": "var tray = global.get('tray');\nvar blinkyBusSettingMsg = \n{\n    topic : msg.topic, \n    payload : { value: msg.payload.value,  'address': -1  } \n}\nvar blinkyBusMessage = false;\nswitch(msg.payload.cube)\n{\n    case 'led1':\n        blinkyBusSettingMsg.payload.address = 1;\n        blinkyBusMessage = true;\n        break;\n    case 'led2':\n        blinkyBusSettingMsg.payload.address = 2;\n        blinkyBusMessage = true;\n        break;\n    case 'led3':\n        blinkyBusSettingMsg.payload.address = 3;\n        blinkyBusMessage = true;\n        break;\n    case 'nonblinkyBusSetting':\n        tray.nonblinkyBusSetting.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    default:\n        break;\n}\nvar msgArray = [null,null,null];\nif (blinkyBusMessage)\n{\n    global.set('settingInProgress',true);\n    var settingInProgressMsg = {topic:'settingInProgress', payload:true};\n    msgArray = [blinkyBusSettingMsg, settingInProgressMsg, null];\n    \n}\nelse\n{\n    global.set('settingInProgress',false);\n    msgArray = [null,null,{topic:'settingDone', payload:true}];\n}\nreturn msgArray;",
+        "func": "var tray = global.get('tray');\nvar blinkyBusSettingMsg = \n{\n    topic : msg.topic, \n    payload : { value: msg.payload.value,  'address': -1  } \n}\nvar blinkyBusMessage = false;\nswitch(msg.payload.cube)\n{\n    case 'loopDelay':\n        tray.loopDelay.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    default:\n        break;\n}\nvar msgArray = [null,null,null];\nif (blinkyBusMessage)\n{\n    global.set('settingInProgress',true);\n    var settingInProgressMsg = {topic:'settingInProgress', payload:true};\n    msgArray = [blinkyBusSettingMsg, settingInProgressMsg, null];\n    \n}\nelse\n{\n    global.set('settingInProgress',false);\n    msgArray = [null,null,{topic:'settingDone', payload:true}];\n}\nreturn msgArray;",
         "outputs": 3,
         "noerr": 0,
         "initialize": "",
@@ -1704,8 +1236,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1120,
-        "y": 680,
+        "x": 1240,
+        "y": 1020,
         "wires": [
             [
                 "e067291cdd1fd9f4"
@@ -1726,8 +1258,8 @@
         "correl": "",
         "expiry": "",
         "broker": "79250bf3.365cc4",
-        "x": 1280,
-        "y": 680,
+        "x": 1400,
+        "y": 1020,
         "wires": []
     },
     {
@@ -1739,8 +1271,445 @@
         "links": [
             "04d132d87ffeb91a"
         ],
-        "x": 1055,
-        "y": 640,
+        "x": 1175,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "78d4bbde71dfd104",
+        "type": "exec",
+        "z": "85e21fcb925ef32f",
+        "command": "python3 readRedPitaya.py",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 560,
+        "y": 1020,
+        "wires": [
+            [
+                "c3db248fb7247829"
+            ],
+            [
+                "4533f88f0f7a7562"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "26de2c540c544d28",
+        "type": "ui_chart",
+        "z": "85e21fcb925ef32f",
+        "name": "I-Q Plot",
+        "group": "67d6e9be.8270f8",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "I-Q Plot",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "x",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "1024",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 980,
+        "y": 1040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2eedabc6fe944e61",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Kill redPitayaProcess",
+        "func": "var process = flow.get('redPitayaProcess');\nvar newMsg = null;\nif (process.fill != 'blue') return  null;\nif (process.pid != undefined)\n{\n    var pid = Number(process.pid.substring(4));\n    newMsg = {topic:'killProcess',payload:pid}\n}\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 840,
+        "wires": [
+            [
+                "90cdb42592df25fa"
+            ]
+        ]
+    },
+    {
+        "id": "90cdb42592df25fa",
+        "type": "exec",
+        "z": "85e21fcb925ef32f",
+        "command": "kill -9 ",
+        "addpay": true,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 590,
+        "y": 840,
+        "wires": [
+            [],
+            [
+                "4533f88f0f7a7562"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "996414e175b47253",
+        "type": "link in",
+        "z": "85e21fcb925ef32f",
+        "name": "start RedPitaya",
+        "links": [
+            "aa428318895690ee",
+            "1e34df4b19ff22cc"
+        ],
+        "x": 55,
+        "y": 900,
+        "wires": [
+            [
+                "6c2eb7d3775d95c9",
+                "dfab1f40ae1248e3"
+            ]
+        ]
+    },
+    {
+        "id": "6c2eb7d3775d95c9",
+        "type": "delay",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "outputs": 1,
+        "x": 170,
+        "y": 900,
+        "wires": [
+            [
+                "2eedabc6fe944e61",
+                "93974811ab23be65"
+            ]
+        ]
+    },
+    {
+        "id": "93974811ab23be65",
+        "type": "delay",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "outputs": 1,
+        "x": 360,
+        "y": 900,
+        "wires": [
+            [
+                "d9ce5f12481f05cb"
+            ]
+        ]
+    },
+    {
+        "id": "c3db248fb7247829",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Read Traces",
+        "func": "var tray = global.get('tray');\nvar traceI = [];\nvar traceQ = [];\nvar traceM = [];\nvar traceT = [];\nvar redPitayaParams = global.get(\"redPitayaParams\");\nvar llrfDspTray = global.get('llrf-dsp');\n\nvar dataView = new DataView(new ArrayBuffer(2));\nvar ndataPts = msg.payload.length / 4;\nfor (var irow = 0; irow < ndataPts; ++irow)\n{\n    dataView.setUint8(1, msg.payload[irow * 2]);\n    dataView.setUint8(0, msg.payload[irow * 2 + 1]);\n    traceI[irow] = dataView.getInt16(0 , true);\n    dataView.setUint8(1, msg.payload[(irow + ndataPts) * 2]);\n    dataView.setUint8(0, msg.payload[(irow + ndataPts) * 2 + 1]);\n    traceQ[irow] = dataView.getInt16(0 , true);\n    traceM[irow] = Math.round(Math.sqrt((traceI[irow] * traceI[irow] + traceQ[irow] * traceQ[irow])));\n    traceI[irow] = Math.round(100000 * traceI[irow] / 32767) / 100000;\n    traceQ[irow] = Math.round(100000 * traceQ[irow] / 32767) / 100000;\n    traceM[irow] = Math.round(100000 * traceM[irow] / 32767) / 100000;\n    traceT[irow] = (Math.round(irow * redPitayaParams.decimation / 12.50) / 10) + llrfDspTray.start1.value;\n    \n}\nvar icenter = Math.round((0.5 * (llrfDspTray.start0.value + llrfDspTray.stop0.value) - llrfDspTray.start1.value) * 125.0 / redPitayaParams.decimation);\ntray.magnitude.value = traceM[icenter];\ntray.inPhase.value = traceI[icenter];\ntray.quadPhase.value = traceQ[icenter];\ntray.phase.value = Math.round(10 * Math.atan2(traceQ[icenter], traceI[icenter]) * 180 / Math.PI) / 10;\ntray.watchdog.value = tray.watchdog.value + 1;\nif ( tray.watchdog.value > 32760 ) tray.watchdog.value = 0;\nvar iqDataChart = [\n    {\n        series : [\"TraceM\", \"TraceI\", \"TraceQ\"],\n        data   : [[],[],[]],\n        labels : [\"\"]\n    }\n];\nfor (var irow = 0; irow < traceI.length; ++irow)\n{\n    iqDataChart[0].data[0][irow] = {\"x\":traceT[irow],\"y\":traceM[irow]};\n    iqDataChart[0].data[1][irow] = {\"x\":traceT[irow],\"y\":traceI[irow]};\n    iqDataChart[0].data[2][irow] = {\"x\":traceT[irow],\"y\":traceQ[irow]};\n}\niqDataMsg = {topic:'iqDataMsg',payload: iqDataChart};\nreturn [{topic : \"newData\",payload:true},iqDataMsg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 1020,
+        "wires": [
+            [
+                "99fbe8135d0ce161"
+            ],
+            [
+                "26de2c540c544d28"
+            ]
+        ]
+    },
+    {
+        "id": "4533f88f0f7a7562",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "redPitayaProcess Err",
+        "func": "node.warn(msg.payload);\nreturn msg;",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "0d1d0894bebf4993",
+        "type": "inject",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 840,
+        "wires": [
+            [
+                "2eedabc6fe944e61"
+            ]
+        ]
+    },
+    {
+        "id": "e2d84bc598cff2e3",
+        "type": "inject",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 1020,
+        "wires": [
+            [
+                "d9ce5f12481f05cb"
+            ]
+        ]
+    },
+    {
+        "id": "eb48e395afa18c53",
+        "type": "status",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "scope": [
+            "78d4bbde71dfd104"
+        ],
+        "x": 100,
+        "y": 780,
+        "wires": [
+            [
+                "2525dce4d5ccf892"
+            ]
+        ]
+    },
+    {
+        "id": "2525dce4d5ccf892",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Get redPitayaProcess",
+        "func": "var newMsg = {fill: msg.status.fill, pid:msg.status.text}\nflow.set('redPitayaProcess', newMsg);\nreturn null;",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "d9ce5f12481f05cb",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Red Pitaya Params",
+        "func": "var redPitayaParams = \n{\n    loopDelay       : global.get('tray').loopDelay.value,\n    trigDelay       : 8196,\n    decimation      : 256,\n    recordLength    : 1024\n}\nglobal.set(\"redPitayaParams\", redPitayaParams);\nvar redPitayaArgs = \"\";\nredPitayaArgs = redPitayaArgs + \" -ld \" + redPitayaParams.loopDelay.toString();\nredPitayaArgs = redPitayaArgs + \" -td \" + redPitayaParams.trigDelay.toString();\nredPitayaArgs = redPitayaArgs + \" -dm \" + redPitayaParams.decimation.toString();\nredPitayaArgs = redPitayaArgs + \" -rl \" + redPitayaParams.recordLength.toString();\n\nreturn {topic: \"redPitayaParams\", payload:redPitayaArgs};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1020,
+        "wires": [
+            [
+                "78d4bbde71dfd104"
+            ]
+        ]
+    },
+    {
+        "id": "b2779abf14b48c0c",
+        "type": "mqtt in",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "topic": "mirrotron/llrf-dsp/01/reading",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "79250bf3.365cc4",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 180,
+        "y": 1220,
+        "wires": [
+            [
+                "6e2b0fea88632a49"
+            ]
+        ]
+    },
+    {
+        "id": "d308f145e243c632",
+        "type": "mqtt out",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "topic": "mirrotron/llrf-dsp/01/setting/ping",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "79250bf3.365cc4",
+        "x": 550,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "dfab1f40ae1248e3",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Ping llrf-dsp",
+        "func": "msg.payload = true;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 1100,
+        "wires": [
+            [
+                "d308f145e243c632"
+            ]
+        ]
+    },
+    {
+        "id": "87af1ca5ddc6946d",
+        "type": "inject",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 1100,
+        "wires": [
+            [
+                "dfab1f40ae1248e3"
+            ]
+        ]
+    },
+    {
+        "id": "6e2b0fea88632a49",
+        "type": "json",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 370,
+        "y": 1220,
+        "wires": [
+            [
+                "ad6b1898f70a05ad"
+            ]
+        ]
+    },
+    {
+        "id": "ad6b1898f70a05ad",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Store llrf-dsp",
+        "func": "global.set('llrf-dsp',msg.payload);\n",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1220,
         "wires": []
     }
 ]

@@ -3,58 +3,18 @@
   "name": "01",
   "arcPeriod": 60000,
   "timeStamp": 1646408271939,
-  "led1": {
-    "action": "setting",
+  "watchdog": {
+    "action": "reading",
     "type": "scalar",
+    "value": 85,
     "unit": "unit",
     "alarm": {
       "value": 0,
       "limits": {
         "lolo": -1,
-        "low": -1,
-        "high": 2,
-        "hihi": 2
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    },
-    "value": 1
-  },
-  "led2": {
-    "action": "setting",
-    "type": "scalar",
-    "unit": "unit",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -1,
-        "low": -1,
-        "high": 2,
-        "hihi": 2
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    },
-    "value": 1
-  },
-  "led3": {
-    "action": "setting",
-    "type": "scalar",
-    "value": 1,
-    "unit": "unit",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -1,
-        "low": -1,
-        "high": 2,
-        "hihi": 2
+        "low": 0,
+        "high": 40000,
+        "hihi": 50000
       },
       "notify": {
         "name": "",
@@ -63,18 +23,18 @@
       }
     }
   },
-  "nonModbusSetting": {
+  "loopDelay": {
     "action": "setting",
     "type": "scalar",
-    "value": 0,
-    "unit": "unit",
+    "value": 5,
+    "unit": "S",
     "alarm": {
       "value": 0,
       "limits": {
-        "lolo": -1,
-        "low": -1,
-        "high": 2,
-        "hihi": 2
+        "lolo": 1,
+        "low": 1,
+        "high": 100,
+        "hihi": 110
       },
       "notify": {
         "name": "",
@@ -82,5 +42,112 @@
         "time": 0
       }
     }
+  },
+  "magnitude": {
+    "action": "reading",
+    "type": "scalar",
+    "unit": "unit",
+    "alarm": {
+      "value": 0,
+      "limits": {
+        "lolo": -1,
+        "low": -1,
+        "high": 1,
+        "hihi": 1
+      },
+      "notify": {
+        "name": "",
+        "number": "",
+        "time": 0
+      }
+    },
+    "value": 0.02548
+  },
+  "inPhase": {
+    "action": "reading",
+    "type": "scalar",
+    "unit": "unit",
+    "alarm": {
+      "value": 0,
+      "limits": {
+        "lolo": -1,
+        "low": -1,
+        "high": 1,
+        "hihi": 1
+      },
+      "notify": {
+        "name": "",
+        "number": "",
+        "time": 0
+      }
+    },
+    "value": 0.02213
+  },
+  "quadPhase": {
+    "action": "reading",
+    "type": "scalar",
+    "unit": "unit",
+    "alarm": {
+      "value": 0,
+      "limits": {
+        "lolo": -1,
+        "low": -1,
+        "high": 1,
+        "hihi": 1
+      },
+      "notify": {
+        "name": "",
+        "number": "",
+        "time": 0
+      }
+    },
+    "value": 0.01267
+  },
+  "phase": {
+    "action": "reading",
+    "type": "scalar",
+    "unit": "deg",
+    "alarm": {
+      "value": 0,
+      "limits": {
+        "lolo": -181,
+        "low": -181,
+        "high": 181,
+        "hihi": 181
+      },
+      "notify": {
+        "name": "",
+        "number": "",
+        "time": 0
+      }
+    },
+    "value": 29.8
+  },
+  "mVec": {
+    "action": "reading",
+    "type": "vector",
+    "unit": "unit",
+    "value": [
+      [],
+      []
+    ]
+  },
+  "iVec": {
+    "action": "reading",
+    "type": "vector",
+    "unit": "unit",
+    "value": [
+      [],
+      []
+    ]
+  },
+  "qVec": {
+    "action": "reading",
+    "type": "vector",
+    "unit": "unit",
+    "value": [
+      [],
+      []
+    ]
   }
 }
