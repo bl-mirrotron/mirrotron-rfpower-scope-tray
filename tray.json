@@ -6,7 +6,7 @@
   "watchdog": {
     "action": "reading",
     "type": "scalar",
-    "value": 385,
+    "value": 66,
     "unit": "",
     "alarm": {
       "value": 0,
@@ -26,7 +26,7 @@
   "loopDelay": {
     "action": "setting",
     "type": "scalar",
-    "value": 5,
+    "value": 2,
     "unit": "S",
     "alarm": {
       "value": 0,
@@ -66,7 +66,7 @@
   "decimationPower": {
     "action": "setting",
     "type": "scalar",
-    "value": 9,
+    "value": 8,
     "unit": "",
     "alarm": {
       "value": 0,
@@ -106,7 +106,7 @@
   "sampleRate": {
     "action": "setting",
     "type": "scalar",
-    "value": 250,
+    "value": 125,
     "unit": "Ms/S",
     "alarm": {
       "value": 0,
@@ -132,8 +132,8 @@
       "limits": {
         "lolo": -1,
         "low": -1,
-        "high": 100,
-        "hihi": 100
+        "high": 300,
+        "hihi": 300
       },
       "notify": {
         "name": "",
@@ -141,7 +141,7 @@
         "time": 0
       }
     },
-    "value": 25.54
+    "value": 116.79
   },
   "inPhase": {
     "action": "reading",
@@ -161,14 +161,14 @@
         "time": 0
       }
     },
-    "value": -9.06
+    "value": -43.59
   },
   "quadPhase": {
     "action": "reading",
     "type": "scalar",
     "unit": "unit",
     "alarm": {
-      "value": 0,
+      "value": 4,
       "limits": {
         "lolo": -100,
         "low": -100,
@@ -181,7 +181,7 @@
         "time": 0
       }
     },
-    "value": 23.87
+    "value": 108.38
   },
   "phase": {
     "action": "reading",
@@ -201,7 +201,7 @@
         "time": 0
       }
     },
-    "value": 110.8
+    "value": 111.9
   },
   "mVec": {
     "action": "reading",
