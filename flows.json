@@ -309,7 +309,7 @@
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Save Settings to File",
-        "func": "var jsonPretty = JSON.stringify(global.get('tray'),null,2);\nreturn {topic: msg.payload, payload:jsonPretty};",
+        "func": "var trayCopy = JSON.parse(JSON.stringify(global.get('tray')));\ntrayCopy.mVec.value = [[],[]];\ntrayCopy.iVec.value = [[],[]];\ntrayCopy.qVec.value = [[],[]];\nvar jsonPretty = JSON.stringify(trayCopy,null,2);\nreturn {topic: msg.payload, payload:jsonPretty};",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1185,7 +1185,7 @@
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Publish tray",
-        "func": "if (!msg.payload) return null;\nvar tray = global.get('tray');\nvar newMsg = \n{\n    topic: global.get('trayProps').box + '/' + global.get('trayProps').type + '/' + global.get('trayProps').name + '/archive',\n    payload: JSON.stringify(tray)\n};\nreturn  newMsg;  \n",
+        "func": "if (!msg.payload) return null;\nvar trayCopy = JSON.parse(JSON.stringify(global.get('tray')));\ntrayCopy.mVec.value = [[],[]];\ntrayCopy.iVec.value = [[],[]];\ntrayCopy.qVec.value = [[],[]];\nvar newMsg = \n{\n    topic: global.get('trayProps').box + '/' + global.get('trayProps').type + '/' + global.get('trayProps').name + '/archive',\n    payload: JSON.stringify(trayCopy)\n};\nreturn  newMsg;  \n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1205,7 +1205,7 @@
         "z": "85e21fcb925ef32f",
         "g": "24d6701c4857e25e",
         "name": "Create Setting",
-        "func": "var tray = global.get('tray');\nvar blinkyBusSettingMsg = \n{\n    topic : msg.topic, \n    payload : { value: msg.payload.value,  'address': -1  } \n}\nvar blinkyBusMessage = false;\nswitch(msg.payload.cube)\n{\n    case 'loopDelay':\n        tray.loopDelay.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    default:\n        break;\n}\nvar msgArray = [null,null,null];\nif (blinkyBusMessage)\n{\n    global.set('settingInProgress',true);\n    var settingInProgressMsg = {topic:'settingInProgress', payload:true};\n    msgArray = [blinkyBusSettingMsg, settingInProgressMsg, null];\n    \n}\nelse\n{\n    global.set('settingInProgress',false);\n    msgArray = [null,null,{topic:'settingDone', payload:true}];\n}\nreturn msgArray;",
+        "func": "var tray = global.get('tray');\nvar blinkyBusSettingMsg = \n{\n    topic : msg.topic, \n    payload : { value: msg.payload.value,  'address': -1  } \n}\nvar blinkyBusMessage = false;\nswitch(msg.payload.cube)\n{\n    case 'loopDelay':\n        tray.loopDelay.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    case 'preTrigger':\n        tray.preTrigger.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    case 'decimationPower':\n        tray.decimationPower.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    case 'recordLengthPower':\n        tray.recordLengthPower.value  = msg.payload.value;\n        blinkyBusMessage = false;\n        break;\n    default:\n        break;\n}\nvar msgArray = [null,null,null];\nif (blinkyBusMessage)\n{\n    global.set('settingInProgress',true);\n    var settingInProgressMsg = {topic:'settingInProgress', payload:true};\n    msgArray = [blinkyBusSettingMsg, settingInProgressMsg, null];\n    \n}\nelse\n{\n    global.set('settingInProgress',false);\n    msgArray = [null,null,{topic:'settingDone', payload:true}];\n}\nreturn msgArray;",
         "outputs": 3,
         "noerr": 0,
         "initialize": "",
@@ -1397,7 +1397,8 @@
         "wires": [
             [
                 "6c2eb7d3775d95c9",
-                "dfab1f40ae1248e3"
+                "dfab1f40ae1248e3",
+                "66fae208819cdf11"
             ]
         ]
     },
@@ -1455,7 +1456,7 @@
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Read Traces",
-        "func": "var tray = global.get('tray');\nvar traceI = [];\nvar traceQ = [];\nvar traceM = [];\nvar traceT = [];\nvar redPitayaParams = global.get(\"redPitayaParams\");\nvar llrfDspTray = global.get('llrf-dsp');\n\nvar dataView = new DataView(new ArrayBuffer(2));\nvar ndataPts = msg.payload.length / 4;\nfor (var irow = 0; irow < ndataPts; ++irow)\n{\n    dataView.setUint8(1, msg.payload[irow * 2]);\n    dataView.setUint8(0, msg.payload[irow * 2 + 1]);\n    traceI[irow] = dataView.getInt16(0 , true);\n    dataView.setUint8(1, msg.payload[(irow + ndataPts) * 2]);\n    dataView.setUint8(0, msg.payload[(irow + ndataPts) * 2 + 1]);\n    traceQ[irow] = dataView.getInt16(0 , true);\n    traceM[irow] = Math.round(Math.sqrt((traceI[irow] * traceI[irow] + traceQ[irow] * traceQ[irow])));\n    traceI[irow] = Math.round(100000 * traceI[irow] / 32767) / 100;\n    traceQ[irow] = Math.round(100000 * traceQ[irow] / 32767) / 100;\n    traceM[irow] = Math.round(100000 * traceM[irow] / 32767) / 100;\n    traceT[irow] = (Math.round(10 * irow * redPitayaParams.decimation / redPitayaParams.sampleRate) / 10) + llrfDspTray.start1.value;\n    \n}\nvar icenter = Math.round((0.5 * (llrfDspTray.start0.value + llrfDspTray.stop0.value) - llrfDspTray.start1.value) * redPitayaParams.sampleRate / redPitayaParams.decimation);\ntray.magnitude.value = traceM[icenter];\n//traceM[icenter] = 0.0;\ntray.inPhase.value = traceI[icenter];\ntray.quadPhase.value = traceQ[icenter];\ntray.phase.value = Math.round(10 * Math.atan2(traceQ[icenter], traceI[icenter]) * 180 / Math.PI) / 10;\ntray.watchdog.value = tray.watchdog.value + 1;\nif ( tray.watchdog.value > 32760 ) tray.watchdog.value = 0;\ntray.mVec.value = [traceT,traceM];\ntray.iVec.value = [traceT,traceI];\ntray.qVec.value = [traceT,traceQ];\nvar iqDataChart = [\n    {\n        series : [\"TraceM\", \"TraceI\", \"TraceQ\"],\n        data   : [[],[],[]],\n        labels : [\"\"]\n    }\n];\nfor (var irow = 0; irow < traceI.length; ++irow)\n{\n    iqDataChart[0].data[0][irow] = {\"x\":traceT[irow],\"y\":traceM[irow]};\n    iqDataChart[0].data[1][irow] = {\"x\":traceT[irow],\"y\":traceI[irow]};\n    iqDataChart[0].data[2][irow] = {\"x\":traceT[irow],\"y\":traceQ[irow]};\n}\niqDataMsg = {topic:'iqDataMsg',payload: iqDataChart};\nreturn [{topic : \"newData\",payload:true},iqDataMsg];",
+        "func": "var tray = global.get('tray');\nvar traceI = [];\nvar traceQ = [];\nvar traceM = [];\nvar traceT = [];\nvar redPitayaParams = global.get(\"redPitayaParams\");\nvar timingTray = global.get('timing');\nvar phaseDetectorTray = global.get('phase-detector');\n\nvar dataView = new DataView(new ArrayBuffer(2));\nvar ndataPts = msg.payload.length / 4;\nfor (var irow = 0; irow < ndataPts; ++irow)\n{\n    dataView.setUint8(1, msg.payload[irow * 2]);\n    dataView.setUint8(0, msg.payload[irow * 2 + 1]);\n    traceI[irow] = dataView.getInt16(0 , true);\n    dataView.setUint8(1, msg.payload[(irow + ndataPts) * 2]);\n    dataView.setUint8(0, msg.payload[(irow + ndataPts) * 2 + 1]);\n    traceQ[irow] = dataView.getInt16(0 , true);\n    traceM[irow] = Math.round(Math.sqrt((traceI[irow] * traceI[irow] + traceQ[irow] * traceQ[irow])));\n    traceI[irow] = Math.round(100000 * traceI[irow] / 32767) / 100;\n    traceQ[irow] = Math.round(100000 * traceQ[irow] / 32767) / 100;\n    traceM[irow] = Math.round(100000 * traceM[irow] / 32767) / 100;\n    traceT[irow] = (Math.round(10 * (irow - redPitayaParams.pretrigPts) * redPitayaParams.decimation / redPitayaParams.sampleRate) / 10) + timingTray.start0.value;\n    \n}\nvar icenter = Math.round(phaseDetectorTray.sampleTime.value * redPitayaParams.sampleRate / redPitayaParams.decimation) + redPitayaParams.pretrigPts;\ntray.magnitude.value = traceM[icenter];\n//traceM[icenter] = 0.0;\ntray.inPhase.value = traceI[icenter];\ntray.quadPhase.value = traceQ[icenter];\ntray.phase.value = Math.round(10 * Math.atan2(traceQ[icenter], traceI[icenter]) * 180 / Math.PI) / 10;\ntray.watchdog.value = tray.watchdog.value + 1;\nif ( tray.watchdog.value > 32760 ) tray.watchdog.value = 0;\ntray.mVec.value = [traceT,traceM];\ntray.iVec.value = [traceT,traceI];\ntray.qVec.value = [traceT,traceQ];\nvar iqDataChart = [\n    {\n        series : [\"TraceM\", \"TraceI\", \"TraceQ\"],\n        data   : [[],[],[]],\n        labels : [\"\"]\n    }\n];\nfor (var irow = 0; irow < traceI.length; ++irow)\n{\n    iqDataChart[0].data[0][irow] = {\"x\":traceT[irow],\"y\":traceM[irow]};\n    iqDataChart[0].data[1][irow] = {\"x\":traceT[irow],\"y\":traceI[irow]};\n    iqDataChart[0].data[2][irow] = {\"x\":traceT[irow],\"y\":traceQ[irow]};\n}\niqDataMsg = {topic:'iqDataMsg',payload: iqDataChart};\nreturn [{topic : \"newData\",payload:true},iqDataMsg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -1581,7 +1582,7 @@
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Red Pitaya Params",
-        "func": "var redPitayaParams = \n{\n    loopDelay       : global.get('tray').loopDelay.value,\n    trigDelay       : 8196 - (500 / 2),\n    decimation      : 512,\n    recordLength    : 1024,\n    sampleRate      : 250\n}\nglobal.set(\"redPitayaParams\", redPitayaParams);\nvar redPitayaArgs = \"\";\nredPitayaArgs = redPitayaArgs + \" -ld \" + redPitayaParams.loopDelay.toString();\nredPitayaArgs = redPitayaArgs + \" -td \" + redPitayaParams.trigDelay.toString();\nredPitayaArgs = redPitayaArgs + \" -dm \" + redPitayaParams.decimation.toString();\nredPitayaArgs = redPitayaArgs + \" -rl \" + redPitayaParams.recordLength.toString();\n\nreturn {topic: \"redPitayaParams\", payload:redPitayaArgs};",
+        "func": "let tray = global.get('tray');\nlet decimation = twoToTheN(tray.decimationPower.value);\nlet recordLength = twoToTheN(tray.recordLengthPower.value);\nlet pretrigPts = Math.floor(tray.preTrigger.value * tray.sampleRate.value / decimation);\nvar redPitayaParams = \n{\n    loopDelay       : tray.loopDelay.value,\n    pretrigPts      : pretrigPts,\n    decimation      : decimation,\n    recordLength    : recordLength,\n    sampleRate      : tray.sampleRate.value\n}\nglobal.set(\"redPitayaParams\", redPitayaParams);\nvar redPitayaArgs = \"\";\nredPitayaArgs = redPitayaArgs + \" -ld \" + redPitayaParams.loopDelay.toString();\nredPitayaArgs = redPitayaArgs + \" -td \" + (8196 - redPitayaParams.pretrigPts - 4).toString();\nredPitayaArgs = redPitayaArgs + \" -dm \" + redPitayaParams.decimation.toString();\nredPitayaArgs = redPitayaArgs + \" -rl \" + redPitayaParams.recordLength.toString();\n\nreturn {topic: \"redPitayaParams\", payload:redPitayaArgs};\nfunction twoToTheN(npower)\n{\n    let ttn = 1\n    for (let ii = 0; ii < npower; ++ii) ttn = ttn * 2;\n    return ttn;\n}",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1600,14 +1601,14 @@
         "type": "mqtt in",
         "z": "85e21fcb925ef32f",
         "name": "",
-        "topic": "mirrotron/llrf-dsp/01/reading",
+        "topic": "mirrotron/timing/01/reading",
         "qos": "0",
         "datatype": "auto",
         "broker": "79250bf3.365cc4",
         "nl": false,
         "rap": false,
         "inputs": 0,
-        "x": 180,
+        "x": 170,
         "y": 1220,
         "wires": [
             [
@@ -1620,7 +1621,7 @@
         "type": "mqtt out",
         "z": "85e21fcb925ef32f",
         "name": "",
-        "topic": "mirrotron/llrf-dsp/01/setting/ping",
+        "topic": "mirrotron/timing/01/setting/ping",
         "qos": "0",
         "retain": "false",
         "respTopic": "",
@@ -1629,7 +1630,7 @@
         "correl": "",
         "expiry": "",
         "broker": "79250bf3.365cc4",
-        "x": 550,
+        "x": 610,
         "y": 1100,
         "wires": []
     },
@@ -1637,7 +1638,7 @@
         "id": "dfab1f40ae1248e3",
         "type": "function",
         "z": "85e21fcb925ef32f",
-        "name": "Ping llrf-dsp",
+        "name": "Ping timing",
         "func": "msg.payload = true;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
@@ -1689,7 +1690,7 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 370,
+        "x": 410,
         "y": 1220,
         "wires": [
             [
@@ -1701,15 +1702,103 @@
         "id": "ad6b1898f70a05ad",
         "type": "function",
         "z": "85e21fcb925ef32f",
-        "name": "Store llrf-dsp",
-        "func": "global.set('llrf-dsp',msg.payload);\n",
+        "name": "Store timing",
+        "func": "global.set('timing',msg.payload);\n",
         "outputs": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
+        "x": 550,
         "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "c5b9086b1e1e721c",
+        "type": "mqtt out",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "topic": "mirrotron/phase-detector/01/setting/ping",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "79250bf3.365cc4",
+        "x": 640,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "66fae208819cdf11",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Ping phase-detector",
+        "func": "msg.payload = true;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 1160,
+        "wires": [
+            [
+                "c5b9086b1e1e721c"
+            ]
+        ]
+    },
+    {
+        "id": "6a9a20e08de302e4",
+        "type": "mqtt in",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "topic": "mirrotron/phase-detector/01/reading",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "79250bf3.365cc4",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 200,
+        "y": 1280,
+        "wires": [
+            [
+                "f35ba86e46d6d214"
+            ]
+        ]
+    },
+    {
+        "id": "f35ba86e46d6d214",
+        "type": "json",
+        "z": "85e21fcb925ef32f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 410,
+        "y": 1280,
+        "wires": [
+            [
+                "acea1484e4135078"
+            ]
+        ]
+    },
+    {
+        "id": "acea1484e4135078",
+        "type": "function",
+        "z": "85e21fcb925ef32f",
+        "name": "Store timing",
+        "func": "global.set('phase-detector',msg.payload);\n",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 1280,
         "wires": []
     }
 ]
