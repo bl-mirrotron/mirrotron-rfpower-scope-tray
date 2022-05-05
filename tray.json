@@ -6,8 +6,8 @@
   "watchdog": {
     "action": "reading",
     "type": "scalar",
-    "value": 21,
-    "unit": "unit",
+    "value": 385,
+    "unit": "",
     "alarm": {
       "value": 0,
       "limits": {
@@ -132,8 +132,8 @@
       "limits": {
         "lolo": -1,
         "low": -1,
-        "high": 1,
-        "hihi": 1
+        "high": 100,
+        "hihi": 100
       },
       "notify": {
         "name": "",
@@ -141,19 +141,19 @@
         "time": 0
       }
     },
-    "value": 25.85
+    "value": 25.54
   },
   "inPhase": {
     "action": "reading",
     "type": "scalar",
     "unit": "unit",
     "alarm": {
-      "value": 3,
+      "value": 0,
       "limits": {
-        "lolo": -1,
-        "low": -1,
-        "high": 1,
-        "hihi": 1
+        "lolo": -100,
+        "low": -100,
+        "high": 100,
+        "hihi": 100
       },
       "notify": {
         "name": "",
@@ -161,19 +161,19 @@
         "time": 0
       }
     },
-    "value": -10.01
+    "value": -9.06
   },
   "quadPhase": {
     "action": "reading",
     "type": "scalar",
     "unit": "unit",
     "alarm": {
-      "value": 4,
+      "value": 0,
       "limits": {
-        "lolo": -1,
-        "low": -1,
-        "high": 1,
-        "hihi": 1
+        "lolo": -100,
+        "low": -100,
+        "high": 100,
+        "hihi": 100
       },
       "notify": {
         "name": "",
@@ -181,7 +181,7 @@
         "time": 0
       }
     },
-    "value": 23.83
+    "value": 23.87
   },
   "phase": {
     "action": "reading",
@@ -201,7 +201,7 @@
         "time": 0
       }
     },
-    "value": 112.8
+    "value": 110.8
   },
   "mVec": {
     "action": "reading",
