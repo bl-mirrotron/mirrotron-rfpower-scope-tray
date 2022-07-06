@@ -6,7 +6,7 @@
   "watchdog": {
     "action": "reading",
     "type": "scalar",
-    "value": 66,
+    "value": 497,
     "unit": "",
     "alarm": {
       "value": 0,
@@ -49,7 +49,7 @@
     "value": 500,
     "unit": "uS",
     "alarm": {
-      "value": 0,
+      "value": 2,
       "limits": {
         "lolo": 1,
         "low": 1,
@@ -128,7 +128,7 @@
     "type": "scalar",
     "unit": "unit",
     "alarm": {
-      "value": 4,
+      "value": 0,
       "limits": {
         "lolo": -1,
         "low": -1,
@@ -141,7 +141,7 @@
         "time": 0
       }
     },
-    "value": 116.79
+    "value": 84.59
   },
   "inPhase": {
     "action": "reading",
@@ -161,14 +161,14 @@
         "time": 0
       }
     },
-    "value": -43.59
+    "value": -25.35
   },
   "quadPhase": {
     "action": "reading",
     "type": "scalar",
     "unit": "unit",
     "alarm": {
-      "value": 4,
+      "value": 0,
       "limits": {
         "lolo": -100,
         "low": -100,
@@ -181,7 +181,7 @@
         "time": 0
       }
     },
-    "value": 108.38
+    "value": 80.71
   },
   "phase": {
     "action": "reading",
@@ -201,7 +201,7 @@
         "time": 0
       }
     },
-    "value": 111.9
+    "value": 107.4
   },
   "mVec": {
     "action": "reading",
