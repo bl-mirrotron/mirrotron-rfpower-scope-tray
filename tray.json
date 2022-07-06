@@ -1,5 +1,5 @@
 {
-  "type": "llrf-scope",
+  "type": "rfpower-scope",
   "name": "01",
   "arcPeriod": 60000,
   "timeStamp": 1646408271939,
@@ -123,7 +123,7 @@
       }
     }
   },
-  "magnitude": {
+  "forward": {
     "action": "reading",
     "type": "scalar",
     "unit": "unit",
@@ -143,7 +143,7 @@
     },
     "value": 84.59
   },
-  "inPhase": {
+  "reverse": {
     "action": "reading",
     "type": "scalar",
     "unit": "unit",
@@ -163,47 +163,7 @@
     },
     "value": -25.35
   },
-  "quadPhase": {
-    "action": "reading",
-    "type": "scalar",
-    "unit": "unit",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -100,
-        "low": -100,
-        "high": 100,
-        "hihi": 100
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    },
-    "value": 80.71
-  },
-  "phase": {
-    "action": "reading",
-    "type": "scalar",
-    "unit": "deg",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -181,
-        "low": -181,
-        "high": 181,
-        "hihi": 181
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    },
-    "value": 107.4
-  },
-  "mVec": {
+  "fVec": {
     "action": "reading",
     "type": "vector",
     "unit": "unit",
@@ -212,16 +172,7 @@
       []
     ]
   },
-  "iVec": {
-    "action": "reading",
-    "type": "vector",
-    "unit": "unit",
-    "value": [
-      [],
-      []
-    ]
-  },
-  "qVec": {
+  "rVec": {
     "action": "reading",
     "type": "vector",
     "unit": "unit",
