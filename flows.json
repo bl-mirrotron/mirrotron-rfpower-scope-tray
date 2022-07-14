@@ -1397,8 +1397,7 @@
         "wires": [
             [
                 "6c2eb7d3775d95c9",
-                "dfab1f40ae1248e3",
-                "66fae208819cdf11"
+                "dfab1f40ae1248e3"
             ]
         ]
     },
@@ -1456,7 +1455,7 @@
         "type": "function",
         "z": "85e21fcb925ef32f",
         "name": "Read Traces",
-        "func": "var tray = global.get('tray');\nvar traceF = [];\nvar traceR = [];\nvar traceT = [];\nvar redPitayaParams = global.get(\"redPitayaParams\");\nvar timingTray = global.get('timing');\nvar phaseDetectorTray = global.get('phase-detector');\n\nvar dataView = new DataView(new ArrayBuffer(2));\nvar ndataPts = msg.payload.length / 4;\nfor (var irow = 0; irow < ndataPts; ++irow)\n{\n    dataView.setUint8(1, msg.payload[irow * 2]);\n    dataView.setUint8(0, msg.payload[irow * 2 + 1]);\n    traceF[irow] = dataView.getInt16(0 , true);\n    dataView.setUint8(1, msg.payload[(irow + ndataPts) * 2]);\n    dataView.setUint8(0, msg.payload[(irow + ndataPts) * 2 + 1]);\n    traceR[irow] = dataView.getInt16(0 , true);\n    traceF[irow] = Math.round(4.238* 100000 * traceF[irow] / 32767) / 100;\n    traceR[irow] = Math.round(4.238* 100000 * traceR[irow] / 32767) / 100;\n    traceF[irow] = (traceF[irow] / 1000.0) + 14.5 * (traceF[irow] / 1000.0) * (traceF[irow] / 1000.0);\n    traceR[irow] = (traceR[irow] / 1000.0) + 14.5 * (traceR[irow] / 1000.0) * (traceR[irow] / 1000.0);\n    traceF[irow] = traceF[irow] * 31.622 * 1.0253;\n    traceR[irow] = traceR[irow] * 31.622 * 1.0253;\n    traceT[irow] = (Math.round(10 * (irow - redPitayaParams.pretrigPts) * redPitayaParams.decimation / redPitayaParams.sampleRate) / 10) + timingTray.startGate4.value;\n    \n}\nvar icenter = Math.round(phaseDetectorTray.sampleTime.value * redPitayaParams.sampleRate / redPitayaParams.decimation) + redPitayaParams.pretrigPts;\ntray.forward.value = traceF[icenter];\ntray.reverse.value = traceR[icenter];\ntray.watchdog.value = tray.watchdog.value + 1;\nif ( tray.watchdog.value > 32760 ) tray.watchdog.value = 0;\ntray.fVec.value = [traceT,traceF];\ntray.rVec.value = [traceT,traceR];\nvar iqDataChart = [\n    {\n        series : [\"TraceF\", \"TraceR\",],\n        data   : [[],[]],\n        labels : [\"\"]\n    }\n];\nfor (var irow = 0; irow < traceF.length; ++irow)\n{\n    iqDataChart[0].data[0][irow] = {\"x\":traceT[irow],\"y\":traceF[irow]};\n    iqDataChart[0].data[1][irow] = {\"x\":traceT[irow],\"y\":traceR[irow]};\n}\niqDataMsg = {topic:'iqDataMsg',payload: iqDataChart};\nreturn [{topic : \"newData\",payload:true},iqDataMsg];",
+        "func": "var tray = global.get('tray');\nvar traceF = [];\nvar traceR = [];\nvar traceT = [];\nvar redPitayaParams = global.get(\"redPitayaParams\");\nvar timingTray = global.get('timing');\n\nvar dataView = new DataView(new ArrayBuffer(2));\nvar ndataPts = msg.payload.length / 4;\nfor (var irow = 0; irow < ndataPts; ++irow)\n{\n    dataView.setUint8(1, msg.payload[irow * 2]);\n    dataView.setUint8(0, msg.payload[irow * 2 + 1]);\n    traceF[irow] = dataView.getInt16(0 , true);\n    dataView.setUint8(1, msg.payload[(irow + ndataPts) * 2]);\n    dataView.setUint8(0, msg.payload[(irow + ndataPts) * 2 + 1]);\n    traceR[irow] = dataView.getInt16(0 , true);\n    traceF[irow] = Math.round(4.238* 100000 * traceF[irow] / 32767) / 100;\n    traceR[irow] = Math.round(4.238* 100000 * traceR[irow] / 32767) / 100;\n    traceF[irow] = (traceF[irow] / 1000.0) + 14.5 * (traceF[irow] / 1000.0) * (traceF[irow] / 1000.0);\n    traceR[irow] = (traceR[irow] / 1000.0) + 14.5 * (traceR[irow] / 1000.0) * (traceR[irow] / 1000.0);\n    traceF[irow] = traceF[irow] * 31.622 * 1.0253;\n    traceR[irow] = traceR[irow] * 31.622 * 1.0253;\n    traceT[irow] = (Math.round(10 * (irow - redPitayaParams.pretrigPts) * redPitayaParams.decimation / redPitayaParams.sampleRate) / 10) + timingTray.startGate4.value;\n    \n}\nvar icenter = Math.round(0.5 * (timingTray.stopGate4.value - timingTray.startGate4.value) * redPitayaParams.sampleRate / redPitayaParams.decimation) + redPitayaParams.pretrigPts;\n\ntray.forward.value = traceF[icenter];\ntray.reverse.value = traceR[icenter];\ntray.watchdog.value = tray.watchdog.value + 1;\nif ( tray.watchdog.value > 32760 ) tray.watchdog.value = 0;\ntray.fVec.value = [traceT,traceF];\ntray.rVec.value = [traceT,traceR];\nvar iqDataChart = [\n    {\n        series : [\"TraceF\", \"TraceR\",],\n        data   : [[],[]],\n        labels : [\"\"]\n    }\n];\nfor (var irow = 0; irow < traceF.length; ++irow)\n{\n    iqDataChart[0].data[0][irow] = {\"x\":traceT[irow],\"y\":traceF[irow]};\n    iqDataChart[0].data[1][irow] = {\"x\":traceT[irow],\"y\":traceR[irow]};\n}\niqDataMsg = {topic:'iqDataMsg',payload: iqDataChart};\nreturn [{topic : \"newData\",payload:true},iqDataMsg];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -1711,94 +1710,6 @@
         "libs": [],
         "x": 550,
         "y": 1220,
-        "wires": []
-    },
-    {
-        "id": "c5b9086b1e1e721c",
-        "type": "mqtt out",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "topic": "mirrotron/phase-detector/01/setting/ping",
-        "qos": "0",
-        "retain": "false",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "79250bf3.365cc4",
-        "x": 640,
-        "y": 1160,
-        "wires": []
-    },
-    {
-        "id": "66fae208819cdf11",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Ping phase-detector",
-        "func": "msg.payload = true;\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 340,
-        "y": 1160,
-        "wires": [
-            [
-                "c5b9086b1e1e721c"
-            ]
-        ]
-    },
-    {
-        "id": "6a9a20e08de302e4",
-        "type": "mqtt in",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "topic": "mirrotron/phase-detector/01/reading",
-        "qos": "0",
-        "datatype": "auto",
-        "broker": "79250bf3.365cc4",
-        "nl": false,
-        "rap": false,
-        "inputs": 0,
-        "x": 200,
-        "y": 1280,
-        "wires": [
-            [
-                "f35ba86e46d6d214"
-            ]
-        ]
-    },
-    {
-        "id": "f35ba86e46d6d214",
-        "type": "json",
-        "z": "85e21fcb925ef32f",
-        "name": "",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 410,
-        "y": 1280,
-        "wires": [
-            [
-                "acea1484e4135078"
-            ]
-        ]
-    },
-    {
-        "id": "acea1484e4135078",
-        "type": "function",
-        "z": "85e21fcb925ef32f",
-        "name": "Store phase-detector",
-        "func": "global.set('phase-detector',msg.payload);\n",
-        "outputs": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 580,
-        "y": 1280,
         "wires": []
     }
 ]
