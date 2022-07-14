@@ -126,7 +126,7 @@
   "forward": {
     "action": "reading",
     "type": "scalar",
-    "unit": "unit",
+    "unit": "kW",
     "alarm": {
       "value": 0,
       "limits": {
@@ -146,7 +146,7 @@
   "reverse": {
     "action": "reading",
     "type": "scalar",
-    "unit": "unit",
+    "unit": "kW",
     "alarm": {
       "value": 0,
       "limits": {
@@ -166,7 +166,7 @@
   "fVec": {
     "action": "reading",
     "type": "vector",
-    "unit": "unit",
+    "unit": "kW",
     "value": [
       [],
       []
@@ -175,7 +175,7 @@
   "rVec": {
     "action": "reading",
     "type": "vector",
-    "unit": "unit",
+    "unit": "kW",
     "value": [
       [],
       []
