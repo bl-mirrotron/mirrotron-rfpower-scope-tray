@@ -1,0 +1,7 @@
+MQTTSUBSCRIBE=mirrotron/rfpower-scope/01/setting/#
+MQTTCLIENTID=mirrotron-rfpower-scope-01
+MQTTSERVERIP=xxx
+MQTTUSERNAME=yyy
+MQTTPASSWORD=zzz
+PM2NAME=rfpower-scope-01
+NODEREDCONFIGSECRET=aaa
